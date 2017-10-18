@@ -1,0 +1,24 @@
+{
+  "name": "avram/aws-schedule-run",
+  "description": "Laravel command which makes only single instance run schedule:run for AWS cloud hosting",
+  "authors": [
+    {
+      "name": "Nemanja Avramović",
+      "email": "avramyu@gmail.com"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "aws/aws-sdk-php": "^3.36"
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Avram\\AwsCronJob\\Providers\\AwsCronJobServiceProvider"
+      ],
+      "aliases": {
+        "Debugbar": "Barryvdh\\Debugbar\\Facade"
+      }
+    }
+  }
+}
