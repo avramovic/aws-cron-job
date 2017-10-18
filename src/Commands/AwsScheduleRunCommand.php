@@ -20,7 +20,7 @@ class AwsScheduleRunCommand extends ScheduleRunCommand
      *
      * @var string
      */
-    protected $description = 'Run the scheduled commands but only on a single EC2 instance';
+    protected $description = 'Run the scheduled commands, but only on a single EC2 instance';
 
     /**
      * Create a new command instance.
@@ -42,7 +42,7 @@ class AwsScheduleRunCommand extends ScheduleRunCommand
         $skip = explode(',', config('awscronjob.skip_environments', 'local'));
         $skip = array_map('trim', $skip);
         $appEnv = config('app.env', 'local');
-        if (in_array($appEnv, $skip) && !1) {
+        if (in_array($appEnv, $skip)) {
             $this->line('Local environment detected!');
             $this->runIfEnabled();
         }
