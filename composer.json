@@ -1,6 +1,6 @@
 {
-  "name": "avram/aws-schedule-run",
-  "description": "Laravel command which makes only single instance run schedule:run for AWS cloud hosting",
+  "name": "avram/aws-cron-job",
+  "description": "Laravel command which makes only single EC2 instance run schedule:run for AWS cloud hosting",
   "authors": [
     {
       "name": "Nemanja Avramović",
@@ -15,10 +15,7 @@
     "laravel": {
       "providers": [
         "Avram\\AwsCronJob\\Providers\\AwsCronJobServiceProvider"
-      ],
-      "aliases": {
-        "Debugbar": "Barryvdh\\Debugbar\\Facade"
-      }
+      ]
     }
   }
 }
