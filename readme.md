@@ -82,7 +82,7 @@ Since at least `aws_environment` will be different for each of your environments
 * `AWS_CRON_RUN_ON_ERRORS` (optional)
 * `AWS_CRON_CACHE_TIME` (optional)
 
-Note that your AWS IAM user must have `ec2:Describe*` permissions to access list of your instances. Just in case, I gave my user whole `arn:aws:iam::aws:policy/AmazonEC2ReadOnlyAccess`
+> **Note**: Your AWS IAM user must have `ec2:Describe*` permissions to access list of your instances. Just in case, I gave my user `arn:aws:iam::aws:policy/AmazonEC2ReadOnlyAccess` policy.
     
 ## Usage
 
