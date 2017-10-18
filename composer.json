@@ -17,5 +17,10 @@
         "Avram\\AwsCronJob\\Providers\\AwsCronJobServiceProvider"
       ]
     }
+  },
+  "autoload": {
+    "psr-4": {
+      Avram\\AwsCronJob\\": "src"
+    }
   }
 }
