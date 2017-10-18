@@ -43,8 +43,9 @@ class AwsScheduleRunCommand extends ScheduleRunCommand
         $skip = array_map('trim', $skip);
         $appEnv = config('app.env', 'local');
         if (in_array($appEnv, $skip)) {
-            $this->line('Local environment detected!');
-            $this->runIfEnabled();
+            $this->line('Local environment detected! Will run scheduled tasks!');
+            $this->runSchedules();
+            exit(0);
         }
 
         $ec2 = new Ec2Instance(config('awscronjob.connection', []));
@@ -88,7 +89,7 @@ class AwsScheduleRunCommand extends ScheduleRunCommand
         }
 
         if ($thisInstance == $activeInstances[0]) {
-            $this->info('This is a leader instance, firing scheduled tasks!');
+            $this->info('This is a leader instance, running scheduled tasks!');
             $this->runSchedules();
             exit(0);
         }
@@ -99,13 +100,13 @@ class AwsScheduleRunCommand extends ScheduleRunCommand
     protected function runIfEnabled($thenStop = true)
     {
         if (config('awscronjob.run_on_errors', true)) {
-            $this->line('Will fire scheduled tasks (per config).');
+            $this->line('Will run scheduled tasks (per config).');
             $this->runSchedules();
             if ($thenStop) {
                 exit(0);
             }
         } else {
-            $this->error('Won\'t fire scheduled tasks (per config).');
+            $this->error('Won\'t run scheduled tasks (per config).');
         }
     }
 
