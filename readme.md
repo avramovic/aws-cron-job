@@ -4,7 +4,7 @@ This is a Laravel 5.x package which enables running cron jobs on only one EC2 in
 
 ## Problem
 
-In a typical AWS load-balanced environment, all EC2 instances are exactly the same, and all of them will run any configured cron jobs (if configured through `.ebextensions` fodler). This can be fine in some cases, but can result in cron jobs being executed more than once, which can be a problem, for example your system can send same email notifications more than once.
+In a typical AWS load-balanced environment, all EC2 instances are exactly the same, and all of them will run any configured cron jobs (if configured through `.ebextensions` folder). This can be fine in some cases, but can result in cron jobs being run more than once, which can be a problem, for example your system can send same email notifications more than once.
 
 ### AWS solutions
 
@@ -67,8 +67,8 @@ After that you can setup the package in `config/awscronjob.php`:
 	
 * `connection` AWS region and API version (credentials will be picked from your env by default)
 * `aws_environment` AWS environment name used to filter instances
-* `skip_environments` A comma separated list of Laravel app environments to skip and automatically execute cron jobs (default: `local`)
-* `run_on_errors` Should it execute tasks if an error in communication with AWS servers happens (default: `true`)
+* `skip_environments` A comma separated list of Laravel app environments to skip and automatically run cron jobs (default: `local`)
+* `run_on_errors` Should it run cron jobs if an error in communication with AWS servers happens (default: `true`)
 * `cache_time` How long should it cache list of all instanes (in minutes, default: `5`)
 
 Since at least `aws_environment` will be different for each of your environments, it is the best not to mess with the published config file too much, but to set up configuration with the following environment variables directly in your Elasticbeanstalk console:
@@ -86,7 +86,7 @@ Note that your AWS IAM user must have `ec2:Describe*` permissions to access list
     
 ## Usage
 
-Simply, instead of executing your cron job as:
+Simply, instead of running your cron job as:
 
 	php artisan schedule:run
 	
