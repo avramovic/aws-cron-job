@@ -1,6 +1,4 @@
-<?php
-
-namespace Avram\AwsCronJob\Providers;
+<?php namespace Avram\AwsCronJob\Providers;
 
 use Avram\AwsCronJob\Commands\AwsScheduleRunCommand;
 use Illuminate\Console\Scheduling\Schedule;

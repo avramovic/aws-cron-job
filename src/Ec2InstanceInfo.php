@@ -2,10 +2,10 @@
 
 use Aws\Ec2\Ec2Client;
 
-class Ec2Instance
+class Ec2InstanceInfo
 {
-    /** @var string */
-    private $connection;
+    /** @var array */
+    protected $connection;
 
     /**
      * Ec2Instance constructor.
@@ -38,7 +38,7 @@ class Ec2Instance
     {
         $ec2Client = new Ec2Client($this->connection);
 
-        $result          = $ec2Client->DescribeInstances();
+        $result          = $ec2Client->describeInstances();
         $data            = $result->toArray();
         $allInstances    = [];
         $activeInstances = [];
@@ -83,7 +83,7 @@ class Ec2Instance
      * @param string $tagName
      * @param array  $instance
      *
-     * @return null
+     * @return null|string
      */
     protected function getInstanceTag($tagName, array $instance)
     {

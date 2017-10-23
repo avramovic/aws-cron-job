@@ -1,6 +1,6 @@
 <?php namespace Avram\AwsCronJob\Commands;
 
-use Avram\AwsCronJob\Ec2Instance;
+use Avram\AwsCronJob\Ec2InstanceInfo;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Console\Scheduling\ScheduleRunCommand;
 use Illuminate\Support\Facades\Cache;
@@ -48,7 +48,7 @@ class AwsScheduleRunCommand extends ScheduleRunCommand
             exit(0);
         }
 
-        $ec2 = new Ec2Instance(config('awscronjob.connection', []));
+        $ec2 = new Ec2InstanceInfo(config('awscronjob.connection', []));
 
         if (Cache::store('file')->has('aws-cronjob-ec2-instances')) {
             $activeInstances = Cache::store('file')->get('aws-cronjob-ec2-instances');
