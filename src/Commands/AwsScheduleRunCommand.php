@@ -50,13 +50,13 @@ class AwsScheduleRunCommand extends ScheduleRunCommand
 
         $ec2 = new Ec2InstanceInfo(config('awscronjob.connection', []));
 
-        if (Cache::store('file')->has('aws-cronjob-ec2-instances')) {
-            $activeInstances = Cache::store('file')->get('aws-cronjob-ec2-instances');
+        if (Cache::has('aws-cronjob-ec2-instances')) {
+            $activeInstances = Cache::get('aws-cronjob-ec2-instances');
         } else {
             try {
                 $activeInstances = $ec2->allInstanceIds(config('awscronjob.aws_environment', 'production'));
                 if (!empty($activeInstances)) {
-                    Cache::store('file')->put('aws-cronjob-ec2-instances', $activeInstances, config('awscronjob.cache_time', 5));
+                    Cache::put('aws-cronjob-ec2-instances', $activeInstances, config('awscronjob.cache_time', 5));
                 }
             } catch (\Exception $ex) {
                 $activeInstances = [];
