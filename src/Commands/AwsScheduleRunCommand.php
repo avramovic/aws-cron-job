@@ -1,11 +1,11 @@
 <?php namespace Avram\AwsCronJob\Commands;
 
 use Avram\AwsCronJob\Ec2InstanceInfo;
+use Exception;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Console\Scheduling\ScheduleRunCommand;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
-use Exception;
 
 class AwsScheduleRunCommand extends ScheduleRunCommand
 {
@@ -40,10 +40,7 @@ class AwsScheduleRunCommand extends ScheduleRunCommand
      */
     public function handle()
     {
-        $skip = explode(',', config('awscronjob.skip_environments', 'local'));
-        $skip = array_map('trim', $skip);
-        $appEnv = config('app.env', 'local');
-        if (in_array($appEnv, $skip)) {
+        if ($this->shouldRunEnvironment()) {
             $this->line('Local environment detected! Will run scheduled tasks!');
             $this->runSchedules();
             exit(0);
@@ -51,38 +48,14 @@ class AwsScheduleRunCommand extends ScheduleRunCommand
 
         $ec2 = new Ec2InstanceInfo(config('awscronjob.connection', []));
 
-        if (config('awscronjob.cache_enabled') && Cache::has('aws-cronjob-ec2-instances')) {
-            $activeInstances = Cache::get('aws-cronjob-ec2-instances');
-        } else {
-            try {
-                $activeInstances = $ec2->allInstanceIds(config('awscronjob.aws_environment', 'production'));
-                if (!empty($activeInstances)) {
-                    Cache::put('aws-cronjob-ec2-instances', $activeInstances, config('awscronjob.cache_time', 5));
-                }
-            } catch (Exception $ex) {
-                $activeInstances = [];
-                Log::error($ex->getMessage());
-            }
-        }
+        $activeInstances = $this->getInstancesList();
 
         if (empty($activeInstances)) {
             $this->line('No EC2 instances returned. Error is logged (if any).');
             $this->runIfEnabled();
         }
 
-        if (config('awscronjob.cache_enabled') && Cache::store('file')->has('aws-cronjob-ec2-instance-id')) {
-            $thisInstance = Cache::store('file')->get('aws-cronjob-ec2-instance-id');
-        } else {
-            try {
-                $thisInstance = $ec2->thisInstanceId();
-                if (!empty($thisInstance)) {
-                    Cache::store('file')->forever('aws-cronjob-ec2-instance-id', $thisInstance);
-                }
-            } catch (Exception $ex) {
-                $thisInstance = null;
-                Log::error($ex->getMessage());
-            }
-        }
+        $thisInstance = $this->getThisInstanceId();
 
         if (empty($thisInstance)) {
             $this->line('Could not retrieve this instance ID. Error is logged.');
@@ -118,5 +91,52 @@ class AwsScheduleRunCommand extends ScheduleRunCommand
         }
 
         parent::handle();
+    }
+
+    protected function getInstancesList()
+    {
+        if (config('awscronjob.cache_enabled') && Cache::has('aws-cronjob-ec2-instances')) {
+            return Cache::get('aws-cronjob-ec2-instances');
+        }
+
+        try {
+            $activeInstances = $ec2->allInstanceIds(config('awscronjob.aws_environment', 'production'));
+            if (!empty($activeInstances)) {
+                Cache::put('aws-cronjob-ec2-instances', $activeInstances, config('awscronjob.cache_time', 5));
+            }
+        } catch (Exception $ex) {
+            $activeInstances = [];
+            Log::error($ex->getMessage());
+        }
+
+        return $activeInstances;
+    }
+
+    protected function getThisInstanceId()
+    {
+        if (config('awscronjob.cache_enabled') && Cache::store('file')->has('aws-cronjob-ec2-instance-id')) {
+            return Cache::store('file')->get('aws-cronjob-ec2-instance-id');
+        }
+
+        try {
+            $thisInstance = $ec2->thisInstanceId();
+            if (!empty($thisInstance)) {
+                Cache::store('file')->forever('aws-cronjob-ec2-instance-id', $thisInstance);
+            }
+        } catch (Exception $ex) {
+            $thisInstance = null;
+            Log::error($ex->getMessage());
+        }
+
+        return $thisInstance;
+    }
+
+    protected function shouldRunEnvironment()
+    {
+        $skip = explode(',', config('awscronjob.skip_environments', 'local'));
+        $skip = array_map('trim', $skip);
+        $appEnv = config('app.env', 'local');
+
+        return in_array($appEnv, $skip);
     }
 }
