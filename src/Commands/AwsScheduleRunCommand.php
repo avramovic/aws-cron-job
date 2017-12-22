@@ -5,6 +5,7 @@ use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Console\Scheduling\ScheduleRunCommand;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use Exception;
 
 class AwsScheduleRunCommand extends ScheduleRunCommand
 {
@@ -50,7 +51,7 @@ class AwsScheduleRunCommand extends ScheduleRunCommand
 
         $ec2 = new Ec2InstanceInfo(config('awscronjob.connection', []));
 
-        if (Cache::has('aws-cronjob-ec2-instances')) {
+        if (config('awscronjob.cache_enabled') && Cache::has('aws-cronjob-ec2-instances')) {
             $activeInstances = Cache::get('aws-cronjob-ec2-instances');
         } else {
             try {
@@ -58,7 +59,7 @@ class AwsScheduleRunCommand extends ScheduleRunCommand
                 if (!empty($activeInstances)) {
                     Cache::put('aws-cronjob-ec2-instances', $activeInstances, config('awscronjob.cache_time', 5));
                 }
-            } catch (\Exception $ex) {
+            } catch (Exception $ex) {
                 $activeInstances = [];
                 Log::error($ex->getMessage());
             }
@@ -69,7 +70,7 @@ class AwsScheduleRunCommand extends ScheduleRunCommand
             $this->runIfEnabled();
         }
 
-        if (Cache::store('file')->has('aws-cronjob-ec2-instance-id')) {
+        if (config('awscronjob.cache_enabled') && Cache::store('file')->has('aws-cronjob-ec2-instance-id')) {
             $thisInstance = Cache::store('file')->get('aws-cronjob-ec2-instance-id');
         } else {
             try {
@@ -77,7 +78,7 @@ class AwsScheduleRunCommand extends ScheduleRunCommand
                 if (!empty($thisInstance)) {
                     Cache::store('file')->forever('aws-cronjob-ec2-instance-id', $thisInstance);
                 }
-            } catch (\Exception $ex) {
+            } catch (Exception $ex) {
                 $thisInstance = null;
                 Log::error($ex->getMessage());
             }
