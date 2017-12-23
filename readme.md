@@ -63,13 +63,15 @@ After that you can setup the package in `config/awscronjob.php`:
 	    'skip_environments' => env('AWS_CRON_SKIP_APP_ENV', 'local'),
 	    'run_on_errors'     => env('AWS_CRON_RUN_ON_ERRORS', true),
 	    'cache_time'        => env('AWS_CRON_CACHE_TIME', 5),
+	    'cache_enabled'     => env('AWS_CRON_CACHE_ENABLED', true),
 	];
 	
 * `connection` AWS region and API version (credentials will be picked from your env by default)
-* `aws_environment` AWS environment name used to filter instances
+* `aws_environment` AWS environment name (used to filter instances by environment name tag)
 * `skip_environments` A comma separated list of Laravel app environments to skip and automatically run cron jobs (default: `local`)
 * `run_on_errors` Should it run cron jobs if an error in communication with AWS servers happens (default: `true`)
 * `cache_time` How long should it cache list of all instanes (in minutes, default: `5`)
+* `cache_enabled` Should we cache instance list and instance id or not (default: `true`)
 
 Since at least `aws_environment` will be different for each of your environments, it is the best not to mess with the published config file too much, but to set up configuration with the following environment variables directly in your Elasticbeanstalk console:
 

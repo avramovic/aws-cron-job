@@ -13,4 +13,5 @@ return [
     'skip_environments' => env('AWS_CRON_SKIP_APP_ENV', 'local'),
     'run_on_errors'     => env('AWS_CRON_RUN_ON_ERRORS', true),
     'cache_time'        => env('AWS_CRON_CACHE_TIME', 5),
+    'cache_enabled'     => env('AWS_CRON_CACHE_ENABLED', true),
 ];
