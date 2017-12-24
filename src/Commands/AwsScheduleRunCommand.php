@@ -46,7 +46,7 @@ class AwsScheduleRunCommand extends ScheduleRunCommand
             exit(0);
         }
 
-        $ec2 = new Ec2InstanceInfo(config('awscronjob.connection', []));
+        $this->ec2 = new Ec2InstanceInfo(config('awscronjob.connection', []));
 
         $activeInstances = $this->getInstancesList();
 
@@ -100,7 +100,7 @@ class AwsScheduleRunCommand extends ScheduleRunCommand
         }
 
         try {
-            $activeInstances = $ec2->allInstanceIds(config('awscronjob.aws_environment', 'production'));
+            $activeInstances = $this->ec2->allInstanceIds(config('awscronjob.aws_environment', 'production'));
             if (!empty($activeInstances)) {
                 Cache::put('aws-cronjob-ec2-instances', $activeInstances, config('awscronjob.cache_time', 5));
             }
@@ -119,7 +119,7 @@ class AwsScheduleRunCommand extends ScheduleRunCommand
         }
 
         try {
-            $thisInstance = $ec2->thisInstanceId();
+            $thisInstance = $this->ec2->thisInstanceId();
             if (!empty($thisInstance)) {
                 Cache::store('file')->forever('aws-cronjob-ec2-instance-id', $thisInstance);
             }
