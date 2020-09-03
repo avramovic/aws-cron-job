@@ -9,7 +9,8 @@
   ],
   "minimum-stability": "dev",
   "require": {
-    "aws/aws-sdk-php": "^3.36"
+    "aws/aws-sdk-php": "^3.36",
+    "illuminate/console": "^6.0"
   },
   "extra": {
     "laravel": {

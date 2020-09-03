@@ -4,6 +4,8 @@ use Avram\AwsCronJob\Ec2InstanceInfo;
 use Exception;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Console\Scheduling\ScheduleRunCommand;
+use Illuminate\Contracts\Debug\ExceptionHandler;
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
@@ -24,21 +26,11 @@ class AwsScheduleRunCommand extends ScheduleRunCommand
     protected $description = 'Run the scheduled commands, but only on a single EC2 instance';
 
     /**
-     * Create a new command instance.
-     *
-     * @param Schedule $schedule
-     */
-    public function __construct(Schedule $schedule)
-    {
-        parent::__construct($schedule);
-    }
-
-    /**
      * Execute the console command.
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(Schedule $schedule, Dispatcher $dispatcher)
     {
         if ($this->shouldRunEnvironment()) {
             $this->line('Local environment detected! Will run scheduled tasks!');
