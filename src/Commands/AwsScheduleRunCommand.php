@@ -34,7 +34,7 @@ class AwsScheduleRunCommand extends ScheduleRunCommand
     {
         if ($this->shouldRunEnvironment()) {
             $this->line('Local environment detected! Will run scheduled tasks!');
-            $this->runSchedules();
+            $this->runSchedules($schedule, $dispatcher);
             exit(0);
         }
 
@@ -56,7 +56,7 @@ class AwsScheduleRunCommand extends ScheduleRunCommand
 
         if ($thisInstance == $activeInstances[0]) {
             $this->info('This is a leader instance, running scheduled tasks!');
-            $this->runSchedules();
+            $this->runSchedules($schedule, $dispatcher);
             exit(0);
         }
 
@@ -67,7 +67,7 @@ class AwsScheduleRunCommand extends ScheduleRunCommand
     {
         if (config('awscronjob.run_on_errors', true)) {
             $this->line('Will run scheduled tasks (per config).');
-            $this->runSchedules();
+            $this->runSchedules($schedule, $dispatcher);
             if ($thenStop) {
                 exit(0);
             }
@@ -76,13 +76,13 @@ class AwsScheduleRunCommand extends ScheduleRunCommand
         }
     }
 
-    protected function runSchedules()
+    protected function runSchedules(Schedule $schedule, Dispatcher $dispatcher)
     {
         if (method_exists($this, 'fire')) {
             return $this->fire();
         }
 
-        parent::handle();
+        parent::handle($schedule, $dispatcher);
     }
 
     protected function getInstancesList()
