@@ -44,14 +44,14 @@ class AwsScheduleRunCommand extends ScheduleRunCommand
 
         if (empty($activeInstances)) {
             $this->line('No EC2 instances returned. Error is logged (if any).');
-            $this->runIfEnabled();
+            $this->runIfEnabled($schedule, $dispatcher);
         }
 
         $thisInstance = $this->getThisInstanceId();
 
         if (empty($thisInstance)) {
             $this->line('Could not retrieve this instance ID. Error is logged.');
-            $this->runIfEnabled();
+            $this->runIfEnabled($schedule, $dispatcher);
         }
 
         if ($thisInstance == $activeInstances[0]) {
@@ -63,7 +63,7 @@ class AwsScheduleRunCommand extends ScheduleRunCommand
         $this->error('This instance is not a leader, not running scheduled tasks!');
     }
 
-    protected function runIfEnabled($thenStop = true)
+    protected function runIfEnabled(Schedule $schedule, Dispatcher $dispatcher, $thenStop = true)
     {
         if (config('awscronjob.run_on_errors', true)) {
             $this->line('Will run scheduled tasks (per config).');
