@@ -1,6 +1,6 @@
 # AWeSome Cron Job
 
-This is a Laravel 5/6/7/8 package which enables running cron jobs on only one EC2 instance in your ElasticBeanstalk load-balanced AWS setup.
+This is a Laravel 5/6/7/8/9 package which enables running cron jobs on only one EC2 instance in your ElasticBeanstalk load-balanced AWS setup.
 
 For different Laravel version please use corresponding package version:
 - Laravel 5: `^0.1`
