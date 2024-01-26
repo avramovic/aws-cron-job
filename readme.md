@@ -6,7 +6,7 @@ For different Laravel version please use corresponding package version:
 - Laravel 5: `^0.1`
 - Laravel 6: `^0.2`
 - Laravel 7: `^0.3`
-- Laravel 8 & 9: `^0.4`
+- Laravel 8, 9 & 10: `^0.4`
 
 ## Problem
 
